@@ -22,13 +22,14 @@ class RootBoxLayout(BoxLayout):
 	def __init__(self, **kwargs):
 		super(RootBoxLayout, self).__init__(**kwargs)
 		self.event = None
+		self.grid_size = 20
 		# create the matrix
-		self.matrix = [[0 for x in range(10)] for x in range(10)] # a 10 x 10 grid
-		print(self.matrix)
+		self.matrix = [[0 for x in range(self.grid_size)] for x in range(self.grid_size)] # a grid
+		
 			
 	def play(self):
 		if self.event == None:
-			self.event = Clock.schedule_interval(self.matrix_up, 0.00001) # new image every 0.1 seconds
+			self.event = Clock.schedule_interval(self.matrix_up, 0.00001) # new image every x seconds
 		else:
 			self.event.cancel()
 			self.event = None
@@ -38,15 +39,15 @@ class RootBoxLayout(BoxLayout):
 		
 		i = 0
 		j = 0
-		while i < 10:
+		while i < self.grid_size:
 			j = 0
-			while j < 10:
+			while j < self.grid_size:
 				if self.matrix[i][j] == 0:	# If the current square is black
 					self.matrix[i][j] = 1		
 					
 					# Done making the matrix
-					i = 10 # Break out of the outer loop
-					j = 10 # Break out of the inner loop
+					i = self.grid_size # Break out of the outer loop
+					j = self.grid_size # Break out of the inner loop
 					
 				else: # If the current square is white do this
 					self.matrix[i][j] = 0					
@@ -60,17 +61,17 @@ class RootBoxLayout(BoxLayout):
 		
 		with self.ids.print_box.canvas:
 			"""Pixel here refers to a rectangle that represents pixels"""
-			pixel_width = self.ids.print_box.width * 0.1    # how wide to draw the pixel
-			pixel_height = self.ids.print_box.height * 0.1  # how tall to draw the pixel
-			pixel_x = self.ids.print_box.x					# x position of the pixel
-			pixel_y = self.ids.print_box.y					# y position of the pixel
+			pixel_width = self.ids.print_box.width * (1/self.grid_size)    # how wide to draw the pixel
+			pixel_height = self.ids.print_box.height * (1/self.grid_size)  # how tall to draw the pixel
+			pixel_x = self.ids.print_box.x	# x position of the pixel
+			pixel_y = self.ids.print_box.y	# y position of the pixel
 			
 			i = 0
 			j = 0
 			
-			while i < 10:
+			while i < self.grid_size:
 				j = 0
-				while j < 10:
+				while j < self.grid_size:
 					new_pos = (pixel_x + (j * pixel_width), pixel_y + (i * pixel_height))
 				
 					if self.matrix[i][j] == 0:	# If the matrix is 0
